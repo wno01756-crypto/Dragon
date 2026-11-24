@@ -1,0 +1,713 @@
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#10251d"><meta name="description" content="Dragon World 3D open world mobile game"><link rel="manifest" href="./manifest.webmanifest"><title>3D Dragon Open World Multiplayer</title><style>*{box-sizing:border-box}body{margin:0;overflow:hidden;background:#9bcfef;font-family:system-ui,Arial;color:#fff}#view{display:block;width:100vw;height:100vh;touch-action:none}.panel{position:fixed;z-index:3;background:#10251ddd;border:1px solid #ffffff40;border-radius:12px;padding:9px}#top{top:8px;left:8px;right:8px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}#top{justify-content:flex-end}#clock{margin-right:auto}#menuPanel strong{margin:0;color:#fff}#menuWrap{position:relative;margin-left:auto}#menuBtn{width:42px;height:38px;padding:0;font-size:25px;line-height:1;background:#ffd45a;color:#222}#menuPanel{position:absolute;top:46px;right:0;display:none;flex-direction:column;gap:8px;min-width:190px;padding:10px;background:#10251df2;border:1px solid #ffffff55;border-radius:12px;box-shadow:0 5px 18px #0008}#menuPanel.open{display:flex}#menuPanel input{width:100%}#menuPanel button{width:100%}#player360Btn.active{background:#35d07f;color:#10251d}input,button{font:inherit;border:0;border-radius:8px;padding:8px}input{width:110px;min-width:0}button{background:#ffd45a;color:#222;font-weight:700}#status{font-size:12px;width:100%;color:#d8f2d0}#help{bottom:9px;left:9px;font-size:11px;max-width:220px}#stick{position:fixed;left:22px;bottom:24px;width:142px;height:142px;border-radius:50%;z-index:4;background:#10251d99;border:3px solid #ffffff99;touch-action:none;display:grid;place-items:center}#knob{width:58px;height:58px;border-radius:50%;background:#ffd45a;border:3px solid #fff;box-shadow:0 2px 8px #0008;pointer-events:none}#clock{font-size:12px;color:#ffe9a6;font-weight:700}#doorBtn{position:fixed;right:22px;bottom:34px;z-index:7;min-width:112px;min-height:48px;display:none}
+#stick{display:none}
+#dpad{position:fixed;left:18px;bottom:20px;width:154px;height:154px;z-index:6;touch-action:none;pointer-events:none}
+#dpad button{position:absolute;width:52px;height:52px;padding:0;border:2px solid #ffffffcc;border-radius:10px;background:#263746dd;color:#fff;font-size:25px;box-shadow:0 3px 8px #0008;pointer-events:auto;touch-action:none;user-select:none}
+#dpad button:active,#dpad button.pressed{background:#d89b22;color:#171717}
+#dpadUp{left:51px;top:0}#dpadDown{left:51px;bottom:0}#dpadLeft{left:0;top:51px}#dpadRight{right:0;top:51px}
+#lookZone{position:fixed;right:0;top:12%;width:58%;height:72%;z-index:2;touch-action:none;background:transparent}
+#actionControls{position:fixed;right:18px;bottom:22px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
+#actionControls button{pointer-events:auto;border:2px solid #ffffffbb;border-radius:50%;background:#10251dcc;color:#fff;text-shadow:0 1px 2px #000;box-shadow:0 3px 9px #0007;touch-action:none}
+#jumpBtn{width:72px;height:72px;font-size:15px}
+#sprintBtn,#sneakBtn{width:54px;height:54px;font-size:11px}
+#moveActions{display:flex;gap:9px;align-items:center}
+#actionControls button.active{background:#d89b22;color:#171717;border-color:#fff}
+@media(max-width:520px){#stick{width:124px;height:124px;left:14px;bottom:18px}#knob{width:52px;height:52px}#actionControls{right:12px;bottom:15px}#jumpBtn{width:66px;height:66px}}#retry[hidden]{display:none}#hungerHUD{position:fixed;z-index:5;top:62px;left:50%;transform:translateX(-50%);display:flex;gap:3px;padding:6px 9px;border-radius:10px;background:#10251d99;border:1px solid #ffffff55;pointer-events:none;white-space:nowrap}
+#hungerHUD .food{font-size:20px;line-height:1;filter:grayscale(1);opacity:.35;text-shadow:0 1px 2px #000}
+#hungerHUD .food.full{filter:none;opacity:1}
+@media(max-width:520px){#hungerHUD{top:58px;gap:1px;padding:5px 7px}#hungerHUD .food{font-size:17px}}
+#healthHUD{position:fixed;z-index:5;top:96px;left:50%;transform:translateX(-50%);display:flex;gap:3px;padding:5px 9px;border-radius:10px;background:#30101899;border:1px solid #ffffff55;pointer-events:none;white-space:nowrap}
+#healthHUD .heart{font-size:19px;line-height:1;filter:grayscale(1);opacity:.3;text-shadow:0 1px 2px #000}
+#healthHUD .heart.full{filter:none;opacity:1}
+@media(max-width:520px){#healthHUD{top:91px;gap:1px;padding:4px 7px}#healthHUD .heart{font-size:17px}}
+#inventoryHUD{position:fixed;z-index:8;left:50%;bottom:184px;transform:translateX(-50%);display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;width:min(94vw,430px);padding:6px;background:#101820cc;border:2px solid #ffffffaa;border-radius:10px;box-shadow:0 3px 12px #0008;pointer-events:auto}
+.inventory-slot{position:relative;aspect-ratio:1/1;min-width:0;border:2px solid #9da8b2;border-radius:6px;background:#263746dd;display:grid;place-items:center;color:#fff;font-size:clamp(17px,4.5vw,25px);padding:0;user-select:none}
+.inventory-slot.selected{border:3px solid #ffd45a;background:#48515a;box-shadow:0 0 0 2px #0008}
+.inventory-slot .count{position:absolute;right:3px;bottom:0;font-size:11px;font-weight:800;text-shadow:1px 1px 2px #000}
+.inventory-slot .slot-number{position:absolute;left:3px;top:0;font-size:9px;color:#d8e2e9;text-shadow:1px 1px 2px #000}
+@media(max-width:520px){#inventoryHUD{bottom:180px;gap:2px;padding:4px;width:96vw}.inventory-slot{border-width:1px;border-radius:5px}.inventory-slot.selected{border-width:2px}}
+
+/* HUD layout: inventory at the bottom, health on the left and hunger on the right. */
+#inventoryHUD{bottom:8px;z-index:10;}
+#healthHUD{top:50%;left:8px;right:auto;transform:translateY(-50%);flex-direction:column;gap:5px;padding:8px 6px;}
+#hungerHUD{top:50%;right:8px;left:auto;transform:translateY(-50%);flex-direction:column;gap:5px;padding:8px 6px;}
+#healthHUD .heart,#hungerHUD .food{font-size:18px;}
+#dpad{bottom:82px;}
+#actionControls{bottom:82px;}
+#doorBtn{bottom:218px;}
+#treeBtn{bottom:158px!important;}
+@media(max-width:520px){
+ #inventoryHUD{bottom:7px;width:96vw;gap:2px;padding:4px;}
+ #healthHUD{left:4px;padding:6px 4px;gap:3px;}
+ #hungerHUD{right:4px;padding:6px 4px;gap:3px;}
+ #healthHUD .heart,#hungerHUD .food{font-size:15px;}
+ #dpad{left:12px;bottom:78px;width:140px;height:140px;}
+ #actionControls{right:10px;bottom:78px;}
+ #doorBtn{bottom:208px;right:10px;}
+ #treeBtn{bottom:150px!important;right:10px!important;}
+}
+#craftPanel{position:fixed;z-index:20;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,390px);max-height:78vh;overflow:auto;display:none;background:#172b25f5;border:2px solid #e2bd65;border-radius:14px;padding:14px;box-shadow:0 8px 28px #000b;color:#fff}#craftPanel.open{display:block}#craftPanel h3{margin:0 0 8px;color:#ffe39a}#craftInventory{font-size:12px;color:#d5e7d8;margin-bottom:10px;line-height:1.7}#craftRecipes{display:grid;grid-template-columns:1fr 1fr;gap:8px}#craftRecipes button{min-height:54px;text-align:left;white-space:normal;background:#d9b45c}#craftRecipes button:disabled{opacity:.38}#closeCraft{width:100%;margin-top:10px;background:#b9c8c0}#craftHint{font-size:12px;color:#ffe9a6;margin:8px 0} </style></head><body><canvas id="view"></canvas><div id="hungerHUD" aria-label="Hunger: 10 out of 10" title="Hunger"><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span><span class="food full">🍗</span></div><div id="healthHUD" aria-label="Health: 10 out of 10" title="Player health"><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span><span class="heart full">❤️</span></div><div id="inventoryHUD" aria-label="Player inventory with 9 slots" title="Inventory"><button class="inventory-slot selected" data-slot="1" aria-label="Inventory slot 1"><span class="slot-number">1</span>🌱<span class="count" id="saplingCount">0</span></button><button class="inventory-slot" data-slot="2" aria-label="Inventory slot 2"><span class="slot-number">2</span>🪓</button><button class="inventory-slot" data-slot="3" aria-label="Apple inventory"><span class="slot-number">3</span>🍎<span class="count" id="appleCount">0</span></button><button class="inventory-slot" data-slot="4" aria-label="Mango inventory"><span class="slot-number">4</span>🥭<span class="count" id="mangoCount">0</span></button><button class="inventory-slot" data-slot="5" aria-label="Carrot inventory"><span class="slot-number">5</span>🥕<span class="count" id="carrotCount">0</span></button><button class="inventory-slot" data-slot="6" aria-label="Radish inventory"><span class="slot-number">6</span>🌶️<span class="count" id="radishCount">0</span></button><button class="inventory-slot" data-slot="7" aria-label="Potato inventory"><span class="slot-number">7</span>🥔<span class="count" id="potatoCount">0</span></button><button class="inventory-slot" data-slot="8" aria-label="Wood inventory; tap to craft planks"><span class="slot-number">8</span>🪵<span class="count" id="woodCount">0</span></button><button class="inventory-slot" data-slot="9" aria-label="Planks inventory"><span class="slot-number">9</span>🟫<span class="count" id="plankCount">0</span></button></div><div id="top" class="panel"><span id="clock">12:00</span><div id="menuWrap"><button id="menuBtn" aria-label="Open menu" aria-expanded="false">⋮</button><div id="menuPanel"><strong>🐉 3D DRAGON WORLD</strong><span>ID: <b id="myid">connecting…</b></span><span id="status">Loading 3D world…</span><input id="friendid" placeholder="Friend ID"><button id="connect">Join friend</button><button id="cameraBtn">Camera: Follow</button><button id="player360Btn">PLAYER 360° VIEW</button><button id="retry" hidden>Retry Again</button></div></div></div><div id="help" class="panel">Minecraft जैसे कंट्रोल: बाईं ओर D-pad से चलो, दाईं ओर स्क्रीन खींचकर 360° चारों तरफ देखो; MENU में PLAYER 360° VIEW दबाओ; JUMP से कूदो और SPRINT/SNEAK इस्तेमाल करो। पास की चीज़ पर TAP TO INTERACT दबाओ।</div><div id="stick" aria-label="Movement joystick"><div id="knob"></div></div><div id="dpad" aria-label="Minecraft movement D-pad">
+  <button id="dpadUp" data-key="w" aria-label="Move forward">▲</button>
+  <button id="dpadLeft" data-key="a" aria-label="Move left">◀</button>
+  <button id="dpadRight" data-key="d" aria-label="Move right">▶</button>
+  <button id="dpadDown" data-key="s" aria-label="Move backward">▼</button>
+</div>
+<div id="lookZone" aria-label="Drag to look around"></div>
+<div id="actionControls">
+  <button id="jumpBtn" aria-label="Jump">JUMP</button>
+  <div id="moveActions">
+    <button id="sneakBtn" aria-label="Sneak">SNEAK</button>
+    <button id="sprintBtn" aria-label="Sprint">SPRINT</button>
+  </div>
+</div>
+<button id="doorBtn">TAP TO INTERACT</button><button id="treeBtn" style="position:fixed;right:22px;bottom:92px;z-index:7;min-width:132px;min-height:48px;display:none;background:#2f8b45;color:white;border:2px solid #ffffffbb">CHOP TREE</button><div id="saplingHUD" style="position:fixed;top:128px;left:50%;transform:translateX(-50%);z-index:5;padding:5px 10px;border-radius:9px;background:#10251d99;border:1px solid #ffffff55;font-size:13px;white-space:nowrap">🌱 Saplings: 0</div><section id="craftPanel" role="dialog" aria-modal="true" aria-label="Crafting table"><h3>🛠️ Crafting Table</h3><div id="craftInventory"></div><div id="craftHint">Recipe चुनो और CRAFT दबाओ।</div><div id="craftRecipes"></div><button id="closeCraft">CLOSE</button></section><script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script><script type="module">
+import * as THREE from 'three';
+const canvas=document.querySelector('#view'),status=document.querySelector('#status'),myid=document.querySelector('#myid'),retry=document.querySelector('#retry');const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.35));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9bbbd0);scene.fog=new THREE.FogExp2(0xa9c4d0,0.00105);const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,2500);scene.add(camera);
+// Celestial bodies use fixed WORLD compass directions, not camera-relative positions.
+// East is -X and West is +X, so turning or moving the player never rotates their path.
+const sunVisual=new THREE.Mesh(new THREE.SphereGeometry(6,24,16),new THREE.MeshBasicMaterial({color:0xffdf73}));
+sunVisual.material.toneMapped=false;
+const sunGlow=new THREE.Mesh(new THREE.SphereGeometry(8,20,12),new THREE.MeshBasicMaterial({color:0xffc45b,transparent:true,opacity:.22,depthWrite:false}));
+const moonVisual=new THREE.Mesh(new THREE.SphereGeometry(4.8,24,16),new THREE.MeshBasicMaterial({color:0xe8efff}));
+const moonCraterMat=new THREE.MeshBasicMaterial({color:0xb9c5dc});
+const moonCrater1=new THREE.Mesh(new THREE.SphereGeometry(.75,12,8),moonCraterMat);
+const moonCrater2=new THREE.Mesh(new THREE.SphereGeometry(.48,12,8),moonCraterMat);
+moonCrater1.position.set(1.3,.9,4.45);moonCrater2.position.set(-1.25,-1.2,4.55);
+moonVisual.add(moonCrater1,moonCrater2);
+const starPositions=[];
+let starSeed=98765;
+function starRand(){starSeed=(starSeed*1664525+1013904223)>>>0;return starSeed/4294967296}
+for(let i=0;i<260;i++){
+ const x=(starRand()-.5)*2600,y=18+starRand()*125,z=-145-starRand()*20;
+ starPositions.push(x,y,z);
+}
+const starGeometry=new THREE.BufferGeometry();
+starGeometry.setAttribute('position',new THREE.Float32BufferAttribute(starPositions,3));
+const starField=new THREE.Points(starGeometry,new THREE.PointsMaterial({color:0xffffff,size:1.65,sizeAttenuation:false,transparent:true,opacity:.95}));
+scene.add(sunVisual,sunGlow,moonVisual,starField);
+sunVisual.position.set(-105,0,0);sunGlow.position.copy(sunVisual.position);moonVisual.position.set(105,0,0);
+const hemi=new THREE.HemisphereLight(0xd9ecff,0x394b32,1.65);scene.add(hemi);const fillLight=new THREE.AmbientLight(0xffffff,.12);scene.add(fillLight);const sun=new THREE.DirectionalLight(0xffe8c4,2.65);sun.position.set(-45,85,35);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=90;sun.shadow.camera.bottom=-90;sun.shadow.camera.far=240;sun.shadow.bias=-.0002;scene.add(sun,sun.target);
+// World map expanded to 10x its previous width and length (3000 x 2250).
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(3000,2250),new THREE.MeshStandardMaterial({color:0x66834a,roughness:1}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);const road=new THREE.Mesh(new THREE.PlaneGeometry(3000,13),new THREE.MeshStandardMaterial({color:0x343a3d,roughness:.96}));road.rotation.x=-Math.PI/2;road.position.y=.025;road.receiveShadow=true;scene.add(road);const roadLineMat=new THREE.MeshStandardMaterial({color:0xe6d7a4,roughness:.9});for(let rx=-1490;rx<1500;rx+=32){const dash=new THREE.Mesh(new THREE.PlaneGeometry(13,.16),roadLineMat);dash.rotation.x=-Math.PI/2;dash.position.set(rx,.045,0);scene.add(dash);}for(const side of [-1,1]){const edge=new THREE.Mesh(new THREE.PlaneGeometry(3000,.12),roadLineMat);edge.rotation.x=-Math.PI/2;edge.position.set(0,.04,side*6.1);scene.add(edge);}const worldGroup=new THREE.Group();scene.add(worldGroup);function mat(color,roughness=.8){return new THREE.MeshStandardMaterial({color,roughness})}const solidRects=[],solidCircles=[];function addRect(cx,cz,hx,hz){solidRects.push({cx,cz,hx,hz})}function addCircle(cx,cz,r){solidCircles.push({cx,cz,r})}const trunk=mat(0x76502d),leaf=mat(0x267b3d),leaf2=mat(0x39934a),wall=mat(0xe8d8b5),roof=mat(0xa84d3d);let seed=23456;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+const treeRecords=[];let saplings=0;const saplingHUD=document.querySelector('#saplingHUD');
+function makeMatureTree(x,z,plantedAt=null){
+ let g=new THREE.Group();let t=new THREE.Mesh(new THREE.CylinderGeometry(.35,.5,3,7),trunk);t.position.y=1.5;t.castShadow=true;g.add(t);
+ let c=new THREE.Mesh(new THREE.ConeGeometry(2.1,5,7),leaf);c.position.y=4.6;c.castShadow=true;g.add(c);
+ let c2=new THREE.Mesh(new THREE.ConeGeometry(1.6,3.8,7),leaf2);c2.position.y=6;c2.castShadow=true;g.add(c2);
+ // Each mature tree gets two independent fruit chances:
+ // 50% chance to grow an apple and 40% chance to grow a mango.
+ // A tree can therefore have apples, mangoes, both, or neither.
+ if(rand()<0.50){
+  const appleMat=mat(0xd92727,.45),stemMat=mat(0x684321),fruitLeafMat=mat(0x45a843);
+  const apple=new THREE.Mesh(new THREE.SphereGeometry(.34,12,10),appleMat);
+  apple.scale.set(1,.92,1);apple.position.set((rand()-.5)*2.1,4.9+(rand()-.5)*1.5,(rand()-.5)*1.7);apple.castShadow=true;g.add(apple);
+  const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.045,.2,6),stemMat);stem.position.copy(apple.position);stem.position.y+=.39;g.add(stem);
+  const fruitLeaf=new THREE.Mesh(new THREE.SphereGeometry(.12,8,6),fruitLeafMat);fruitLeaf.scale.set(1.5,.45,.7);fruitLeaf.position.set(stem.position.x+.1,stem.position.y+.04,stem.position.z);g.add(fruitLeaf);
+  g.userData.fruitType='apple';
+ }
+ if(rand()<0.40){
+  const mangoMat=mat(0xffb52e,.45),fruitLeafMat=mat(0x45a843);
+  const mango=new THREE.Mesh(new THREE.SphereGeometry(.38,12,10),mangoMat);
+  mango.scale.set(.82,1.25,.78);mango.rotation.z=-.28;mango.position.set((rand()-.5)*2.1,4.9+(rand()-.5)*1.5,(rand()-.5)*1.7);mango.castShadow=true;g.add(mango);
+  const fruitLeaf=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),fruitLeafMat);fruitLeaf.scale.set(1.6,.4,.7);fruitLeaf.position.set(mango.position.x+.08,mango.position.y+.47,mango.position.z);g.add(fruitLeaf);
+  g.userData.fruitType=g.userData.fruitType==='apple'?'apple+mango':'mango';
+ }
+ g.position.set(x,0,z);worldGroup.add(g);const collision={cx:x,cz:z,r:.72};solidCircles.push(collision);
+ const rec={x,z,group:g,collision,stage:'mature',plantedAt,hits:0,maxHits:5};treeRecords.push(rec);return rec;
+}
+function makeSapling(x,z,plantedAt){
+ const g=new THREE.Group();const stem=new THREE.Mesh(new THREE.CylinderGeometry(.07,.1,.65,6),trunk);stem.position.y=.32;g.add(stem);
+ const leaves=new THREE.Mesh(new THREE.ConeGeometry(.48,1.05,6),leaf);leaves.position.y=.95;g.add(leaves);
+ const sprout=new THREE.Mesh(new THREE.SphereGeometry(.2,8,6),leaf2);sprout.position.set(.2,.72,0);g.add(sprout);
+ g.position.set(x,0,z);worldGroup.add(g);const rec={x,z,group:g,stage:'sapling',plantedAt};treeRecords.push(rec);return rec;
+}
+for(let i=0;i<750;i++){let x=(rand()-.5)*2800,z=(rand()-.5)*2050;if(Math.abs(z)<12)continue;makeMatureTree(x,z)}
+// Walk-in houses with an open doorway, glazed windows and furnished interiors.
+const housePositions=[[-25,-18],[-5,-26],[18,24],[35,-12],[-38,28]];
+const houseBounds=[];const houseDoors=[];let activeInterior=null;
+const woodMat=mat(0x68412b),doorWood=mat(0x56321f),glass=new THREE.MeshStandardMaterial({color:0x8bd7ec,metalness:.25,roughness:.18,emissive:0x16404a}),insideWall=mat(0xd8c39b),floorMat=mat(0x806447),fabric=mat(0x426b83),cushion=mat(0xc58b50);
+function houseBox(g,geo,material,pos){const m=new THREE.Mesh(geo,material);m.position.set(...pos);m.castShadow=true;m.receiveShadow=true;g.add(m);return m}
+function makeHouse(x,z,index){
+ const h=new THREE.Group();
+ // Enlarged floor plan: 1.5x wider and longer (about 12 x 10.5 world units).
+ h.scale.set(1.5,1,1.5);
+ // Solid side and rear walls; front wall is split to leave a real doorway.
+ houseBox(h,new THREE.BoxGeometry(8,.22,7),floorMat,[0,-.13,0]);
+ houseBox(h,new THREE.BoxGeometry(.25,5,7),wall,[-3.875,2.5,0]);
+ houseBox(h,new THREE.BoxGeometry(.25,5,7),wall,[3.875,2.5,0]);
+ houseBox(h,new THREE.BoxGeometry(8,5,.25),wall,[0,2.5,-3.375]);
+ houseBox(h,new THREE.BoxGeometry(2.8,5,.25),wall,[-2.6,2.5,3.375]);
+ houseBox(h,new THREE.BoxGeometry(2.8,5,.25),wall,[2.6,2.5,3.375]);
+ houseBox(h,new THREE.BoxGeometry(2.4,.7,.25),wall,[0,4.65,3.375]);
+ // Roof and trim
+ // Modern cottage roof: two sloped panels meet at a ridge.
+ const roofGroup=new THREE.Group();h.add(roofGroup);
+ const roofPanel1=houseBox(roofGroup,new THREE.BoxGeometry(8.9,.28,5.25),roof,[0,6.18,-1.72]);
+ roofPanel1.rotation.x=-Math.atan2(2.05,3.5);
+ const roofPanel2=houseBox(roofGroup,new THREE.BoxGeometry(8.9,.28,5.25),roof,[0,6.18,1.72]);
+ roofPanel2.rotation.x=Math.atan2(2.05,3.5);
+ houseBox(roofGroup,new THREE.BoxGeometry(9.05,.32,.34),woodMat,[0,7.2,0]);
+ const roofTrim=houseBox(h,new THREE.BoxGeometry(8.25,.2,7.2),woodMat,[0,5.05,0]);
+ houseBox(h,new THREE.BoxGeometry(8.25,.42,7.2),woodMat,[0,.02,0]);
+ houseBox(h,new THREE.BoxGeometry(3.9,.22,1.55),woodMat,[0,.12,4.05]);
+ houseBox(h,new THREE.BoxGeometry(1.05,.18,.7),insideWall,[0,.31,4.48]);
+ for(const px of [-1.85,1.85]){
+   houseBox(h,new THREE.BoxGeometry(.2,3.05,.2),woodMat,[px,1.65,4.55]);
+   houseBox(h,new THREE.BoxGeometry(.34,.18,.34),cushion,[px,3.22,4.55]);
+ }
+ // Open door leaf, hinged to the right so the entrance remains clear.
+ const doorPivot=new THREE.Group();doorPivot.position.set(1.18,.08,3.42);h.add(doorPivot);
+ const leafDoor=houseBox(doorPivot,new THREE.BoxGeometry(1.12,2.85,.14),doorWood,[-.56,1.42,0]);
+ for(let yy of [.35,1.2,2.15])houseBox(doorPivot,new THREE.BoxGeometry(.82,.07,.17),woodMat,[-.56,yy,.08]);
+ // Door frame and handle
+ for(let xx of [-1.25,1.25])houseBox(h,new THREE.BoxGeometry(.16,3.1,.22),woodMat,[xx,1.58,3.48]);
+ houseBox(h,new THREE.BoxGeometry(2.65,.16,.22),woodMat,[0,3.12,3.48]);
+ houseBox(h,new THREE.SphereGeometry(.075,10,8),cushion,[.05,1.45,3.55]);
+ // Front windows with glass, wooden frames and crossbars.
+ for(const wx of [-2.65,2.65]){
+   houseBox(h,new THREE.BoxGeometry(1.15,1.15,.09),glass,[wx,3.05,3.53]);
+   for(const dx of [-.62,.62])houseBox(h,new THREE.BoxGeometry(.1,1.38,.16),woodMat,[wx+dx,3.05,3.54]);
+   for(const dy of [-.68,.68])houseBox(h,new THREE.BoxGeometry(1.34,.1,.16),woodMat,[wx,3.05+dy,3.54]);
+   houseBox(h,new THREE.BoxGeometry(.07,1.12,.18),woodMat,[wx,3.05,3.58]);
+   houseBox(h,new THREE.BoxGeometry(1.12,.07,.18),woodMat,[wx,3.05,3.58]);
+ }
+ // Interior lighting, a bed, side table, rug and ceiling lamp.
+ const lamp=new THREE.PointLight(0xffd89a,1.15,13);lamp.position.set(0,3.7,-.2);h.add(lamp);
+ houseBox(h,new THREE.BoxGeometry(2.35,.12,1.7),fabric,[1.75,.25,-1.65]);
+ houseBox(h,new THREE.BoxGeometry(2.35,.48,1.7),woodMat,[1.75,.52,-1.65]);
+ houseBox(h,new THREE.BoxGeometry(2.15,.2,1.45),cushion,[1.75,.83,-1.65]);
+ houseBox(h,new THREE.BoxGeometry(.9,.28,.65),insideWall,[1.75,1.02,-2.08]);
+ houseBox(h,new THREE.BoxGeometry(.8,.85,.8),woodMat,[-2.45,.52,-1.9]);
+ houseBox(h,new THREE.BoxGeometry(1.35,.08,.85),cushion,[0,.13,-.5]);
+ houseBox(h,new THREE.CylinderGeometry(.12,.12,.5,12),woodMat,[0,3.9,0]);
+ houseBox(h,new THREE.SphereGeometry(.24,12,10),cushion,[0,3.58,0]);
+ h.position.set(x,0,z);worldGroup.add(h);
+ // Solid walls; leave the central front doorway open.
+ addRect(x-5.8125,z,.24,5.325);addRect(x+5.8125,z,.24,5.325);addRect(x,z-5.0625,6.075,.24);
+ addRect(x-3.9,z+5.0625,2.1,.24);addRect(x+3.9,z+5.0625,2.1,.24);
+ // Interior furniture collision, scaled with the larger floor plan.
+ addRect(x+2.625,z-2.475,1.8,1.35);addRect(x-3.675,z-2.85,.72,.72);addRect(x,z-.75,1.08,.72);
+ houseBounds.push({x,z});
+ houseDoors.push({x,z,pivot:doorPivot,open:false,house:h,roof:roofGroup,roofTrim});
+}
+housePositions.forEach(([x,z],i)=>makeHouse(x,z,i));
+
+// Crafting table placed beside the world spawn (near the starting area).
+const craftingTable=new THREE.Group();
+const tableTopMat=mat(0x8b552d),tableSideMat=mat(0x59351f),gridMat=mat(0xd4b27a);
+const tableTop=new THREE.Mesh(new THREE.BoxGeometry(1.35,.22,1.35),tableTopMat);tableTop.position.y=1.05;craftingTable.add(tableTop);
+for(const [x,z] of [[-.5,-.5],[.5,-.5],[-.5,.5],[.5,.5]]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.18,.95,.18),tableSideMat);leg.position.set(x,.48,z);craftingTable.add(leg)}
+for(let i=-1;i<=1;i++){const line1=new THREE.Mesh(new THREE.BoxGeometry(.035,.012,1.12),gridMat);line1.position.set(i*.34,1.17,0);craftingTable.add(line1);const line2=new THREE.Mesh(new THREE.BoxGeometry(1.12,.012,.035),gridMat);line2.position.set(0,1.17,i*.34);craftingTable.add(line2)}
+craftingTable.position.set(4,0,4);worldGroup.add(craftingTable);addRect(4,4,.9,.9);
+
+
+// Rare wild vegetables: each of 100 random world locations has an independent
+// 1% chance to spawn a carrot, radish, and potato. Locations are regenerated per game.
+const cropRecords=[];
+function makeWildCrop(type,x,z){
+ const g=new THREE.Group();
+ const green=mat(0x278b39),green2=mat(0x45ad4d),soil=mat(0x79502e);
+ const stem=new THREE.Mesh(new THREE.CylinderGeometry(.045,.055,.42,6),green);stem.position.y=.22;g.add(stem);
+ for(let i=0;i<3;i++){const leafMesh=new THREE.Mesh(new THREE.ConeGeometry(.12,.72,5),i%2?green:green2);leafMesh.position.set((i-1)*.13,.48,((i%2)-.5)*.12);leafMesh.rotation.z=(i-1)*-.35;g.add(leafMesh)}
+ let root;
+ if(type==='carrot'){root=new THREE.Mesh(new THREE.ConeGeometry(.19,.72,8),mat(0xff8b24));root.rotation.x=Math.PI;root.position.y=-.22;}
+ else if(type==='radish'){root=new THREE.Mesh(new THREE.SphereGeometry(.27,10,8),mat(0xe9e3dc));root.scale.set(.9,1.15,.9);root.position.y=.02;}
+ else {root=new THREE.Mesh(new THREE.SphereGeometry(.27,10,8),mat(0xb78a50));root.scale.set(1.1,.85,1);root.position.y=.02;}
+ g.add(root);g.position.set(x,0,z);g.rotation.y=rand()*Math.PI*2;worldGroup.add(g);
+ const rec={type,x,z,group:g};cropRecords.push(rec);return rec;
+}
+for(let i=0;i<650;i++){
+ const x=(rand()-.5)*2780,z=(rand()-.5)*2030;
+ if(Math.abs(z)<10)continue;
+ if(treeRecords.some(t=>Math.hypot(x-t.x,z-t.z)<2.2))continue;
+ if(houseBounds.some(h=>Math.hypot(x-h.x,z-h.z)<11))continue;
+ if(Math.hypot(x+66,z+48)<27)continue;
+ if(rand()<.01)makeWildCrop('carrot',x,z);
+ if(rand()<.01)makeWildCrop('radish',x+.7,z+.35);
+ if(rand()<.01)makeWildCrop('potato',x-.7,z-.35);
+}
+
+
+// Giant fantasy mountain inspired by the supplied reference image.
+// A tall, jagged, faceted peak with colorful summit crystals and a walk-in cave.
+const cave = new THREE.Group();
+worldGroup.add(cave);
+const rockMat = mat(0x555b61, 1);
+const rockLightMat = mat(0x70777b, 1);
+const caveDarkMat = new THREE.MeshBasicMaterial({color:0x080d13});
+const crystalMat = new THREE.MeshStandardMaterial({
+  color:0x37d9e8, emissive:0x087f9b, emissiveIntensity:1.5,
+  roughness:.25, metalness:.15
+});
+const caveX = -66, caveZ = -48;
+
+// Irregular radial rings create a steep mountain with a narrow pointed summit.
+{
+  const segments=24, rings=13, positions=[], colors=[], indices=[];
+  const palette=[
+    new THREE.Color(0x303b49),new THREE.Color(0x46515c),
+    new THREE.Color(0x59616a),new THREE.Color(0x777b7a),
+    new THREE.Color(0x343e4c)
+  ];
+  for(let r=0;r<=rings;r++){
+    const t=r/rings;
+    const radius= r===rings ? 1.2 : 79*Math.pow(1-t,0.83);
+    const height=125*t;
+    for(let j=0;j<segments;j++){
+      const a=j/segments*Math.PI*2;
+      const wobble=1+0.10*Math.sin(a*5+1.2)+0.055*Math.sin(a*9+r*1.7);
+      const rr=radius*wobble;
+      const peakShift= t*t;
+      const x=Math.cos(a)*rr + 9*peakShift;
+      const z=Math.sin(a)*rr - 10*peakShift;
+      const y=height + (r===rings?0:(Math.sin(a*4+r*1.9)*2.8 + Math.cos(a*7-r)*1.7)*(1-t*.45));
+      positions.push(x,y,z);
+      const c=palette[(j*3+r*2)%palette.length].clone();
+      const shade=.82 + .22*Math.sin(a*3+r*1.4);
+      c.multiplyScalar(shade);
+      colors.push(c.r,c.g,c.b);
+    }
+  }
+  for(let r=0;r<rings;r++)for(let j=0;j<segments;j++){
+    const a=r*segments+j,b=r*segments+(j+1)%segments;
+    const c=(r+1)*segments+j,d=(r+1)*segments+(j+1)%segments;
+    indices.push(a,c,b,b,c,d);
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  const mountain=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({
+    vertexColors:true,roughness:1,flatShading:true
+  }));
+  mountain.castShadow=true;mountain.receiveShadow=true;cave.add(mountain);
+}
+
+// Long angular rock ridges make the mountain face look craggy and dramatic.
+for(let i=0;i<18;i++){
+  const a=i/18*Math.PI*2;
+  const t=.28+(i%5)*.105;
+  const radius=79*(1-t);
+  const ridge=addMesh(cave,new THREE.DodecahedronGeometry(1.7+(i%3)*.55,1),
+    i%3===0?rockLightMat:rockMat,
+    [Math.cos(a)*radius,125*t,Math.sin(a)*radius-10],
+    [.8+(i%4)*.25,3.8+(i%3)*1.2,1.15]);
+  ridge.rotation.set(.15+(i%3)*.2,a,.25);
+}
+
+// A few pale stone/snow streaks close to the summit.
+const summitStone=mat(0xb6b5a9,1);
+for(let i=0;i<7;i++){
+  const a=i/7*Math.PI*2;
+  const streak=addMesh(cave,new THREE.ConeGeometry(2.4,18+(i%3)*5,5),
+    summitStone,[Math.cos(a)*10,103+(i%3)*3,Math.sin(a)*10-10],
+    [.65,1,.55]);
+  streak.rotation.z=(i%2?-.24:.24);
+  streak.rotation.x=Math.cos(a)*.18;
+}
+
+// Bright crystal shards clustered around the pointed summit.
+const summitColors=[0x42e8ff,0x9a58ff,0xff4f9a,0x72ff9c,0xffd45b,0x54aaff];
+for(let i=0;i<15;i++){
+  const a=i/15*Math.PI*2, h=105+(i%5)*3.3;
+  const crystalMaterial=new THREE.MeshStandardMaterial({
+    color:summitColors[i% summitColors.length],
+    emissive:summitColors[i% summitColors.length],
+    emissiveIntensity:.42,metalness:.22,roughness:.22
+  });
+  const shard=addMesh(cave,new THREE.ConeGeometry(.75+(i%3)*.32,5+(i%4)*2,5),
+    crystalMaterial,[Math.cos(a)*(3.5+(i%4)*1.4),h,Math.sin(a)*(3.5+(i%4)*1.4)-10]);
+  shard.rotation.z=(i%2?-.18:.18);shard.rotation.x=Math.sin(a)*.22;
+}
+
+// Cave opening on the front-facing slope, with a dark tunnel and rough stone arch.
+const mouth=addMesh(cave,new THREE.CircleGeometry(1,32),caveDarkMat,
+  [0,7.1,72.2],[7.2,6.1,1]);
+const tunnel=addMesh(cave,new THREE.CylinderGeometry(5.2,5.2,19,24,1,true),
+  rockMat,[0,7.1,62.8]);
+tunnel.rotation.x=Math.PI/2;
+for(let i=0;i<17;i++){
+  const a=Math.PI*(.06+.88*i/16);
+  const x=Math.cos(a)*7.5,y=7.1+Math.sin(a)*6.4;
+  const b=addMesh(cave,new THREE.DodecahedronGeometry(1.7,1),
+    i%3===0?rockLightMat:rockMat,[x,y,71.2],
+    [.9+rand()*.55,.85+rand()*.45,1.1]);
+  b.rotation.set(rand()*.5,rand()*2,rand()*.5);
+}
+for(let side of [-1,1])for(let i=0;i<5;i++){
+  addMesh(cave,new THREE.DodecahedronGeometry(1.8,1),rockMat,
+    [side*(7.4+rand()*2),1.2+i*1.5,70+rand()*1.2],
+    [1.1,.9+rand()*.5,1]);
+}
+for(let i=0;i<7;i++){
+  const side=i%2?1:-1;
+  const crystal=addMesh(cave,new THREE.ConeGeometry(.65,2.8+rand()*1.8,5),
+    crystalMat,[side*(5.3+rand()*2),.8+rand()*2,66+rand()*3]);
+  crystal.rotation.z=side*.2;
+}
+const caveGlow=new THREE.PointLight(0x24cde0,2.2,24);
+caveGlow.position.set(0,4,68);cave.add(caveGlow);
+cave.position.set(caveX,0,caveZ);
+
+
+function makePlayer(color=0x2878ff){
+  const g = new THREE.Group();
+  const skin = mat(0xc98f68);
+  const shirt = mat(color);
+  const pants = mat(0x263449);
+  const shoes = mat(0x20252b);
+  const hair = mat(0x211a16);
+  const eye = mat(0x171717);
+  const mouthMat = mat(0x713c35);
+
+  function part(geo, material, pos, scale){
+    const m = new THREE.Mesh(geo, material);
+    m.position.set(...pos);
+    if(scale) m.scale.set(...scale);
+    m.castShadow = true;
+    m.receiveShadow = true;
+    g.add(m);
+    return m;
+  }
+  const legMeshes=[];
+  function limb(a,b,r1,r2,material){
+    const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b);
+    const direction = new THREE.Vector3().subVectors(end,start);
+    const mesh = part(new THREE.CylinderGeometry(r2,r1,direction.length(),10),
+      material, [(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2]);
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),direction.normalize());
+    return mesh;
+  }
+
+  // Shoes and two separate legs
+  part(new THREE.BoxGeometry(.48,.25,.78),shoes,[-.31,.17,.12],[1,1,1]);
+  part(new THREE.BoxGeometry(.48,.25,.78),shoes,[.31,.17,.12],[1,1,1]);
+  const leftLeg=limb([-.3,.32,0],[-.32,1.12,0],.19,.15,pants);
+  const rightLeg=limb([.3,.32,0],[.32,1.12,0],.19,.15,pants);legMeshes.push(leftLeg,rightLeg);
+  part(new THREE.SphereGeometry(.19,12,10),pants,[-.32,1.08,0]);
+  part(new THREE.SphereGeometry(.19,12,10),pants,[.32,1.08,0]);
+
+  // Natural-shaped torso, collar and neck
+  part(new THREE.CapsuleGeometry(.48,.72,5,12),shirt,[0,1.72,0],[1,1,.72]);
+  part(new THREE.CylinderGeometry(.16,.18,.25,12),skin,[0,2.35,0]);
+  part(new THREE.BoxGeometry(.34,.12,.08),mat(0xe8e8e8),[0,2.25,.32]);
+
+  // Arms, elbows and hands
+  for(const s of [-1,1]){
+    limb([s*.43,2.08,0],[s*.68,1.48,.02],.17,.13,shirt);
+    limb([s*.68,1.48,.02],[s*.72,.88,.12],.13,.095,skin);
+    part(new THREE.SphereGeometry(.13,12,10),skin,[s*.72,.83,.13],[.85,1.15,.8]);
+  }
+
+  // Head with ears, hair and a simple expressive face
+  part(new THREE.SphereGeometry(.48,20,16),skin,[0,2.85,.02],[.86,1.08,.82]);
+  for(const s of [-1,1]){
+    part(new THREE.SphereGeometry(.105,12,10),skin,[s*.405,2.84,0],[.65,1, .7]);
+    part(new THREE.SphereGeometry(.055,10,8),eye,[s*.17,2.91,.405],[.8,1,.55]);
+  }
+  part(new THREE.SphereGeometry(.075,10,8),skin,[0,2.76,.43],[.8,1.15,.75]);
+  part(new THREE.BoxGeometry(.17,.035,.025),mouthMat,[0,2.59,.405]);
+
+  // Hair cap and swept fringe
+  part(new THREE.SphereGeometry(.49,18,12),hair,[0,3.12,-.015],[.9,.55,.86]);
+  part(new THREE.SphereGeometry(.25,12,10),hair,[-.2,3.02,.31],[1.2,.38,.7]);
+  part(new THREE.SphereGeometry(.18,12,10),hair,[.08,3.04,.34],[1.1,.32,.65]);
+
+  g.position.y = 0;g.userData.legMeshes=legMeshes;
+  return g;
+}
+const player=makePlayer();
+// A small woodcutter's axe is visibly held in the player's right hand.
+const axe=new THREE.Group();const axeHandle=new THREE.Mesh(new THREE.CylinderGeometry(.055,.07,.9,8),mat(0x704321));axeHandle.rotation.x=-.22;axeHandle.position.set(0,-.05,0);axe.add(axeHandle);
+const axeHead=new THREE.Mesh(new THREE.BoxGeometry(.42,.24,.12),mat(0xb8c3ca,.35));axeHead.position.set(.16,.31,0);axe.add(axeHead);
+const axeEdge=new THREE.Mesh(new THREE.BoxGeometry(.08,.3,.16),mat(0xe1e8ed,.25));axeEdge.position.set(.37,.31,0);axe.add(axeEdge);
+axe.position.set(.78,.98,.45);axe.rotation.set(-.18,0,-.35);player.add(axe);player.userData.axe=axe;
+scene.add(player);const remotes=new Map();
+const dragon=new THREE.Group();scene.add(dragon);const dragonMat=mat(0x344b5c),bellyMat=mat(0xb7a17b),hornMat=mat(0xd9dfe4),eyeMat=mat(0xffd34f,.35);function addMesh(parent,geo,material,pos,scale){let m=new THREE.Mesh(geo,material);m.position.set(...pos);if(scale)m.scale.set(...scale);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}addMesh(dragon,new THREE.SphereGeometry(1,16,12),dragonMat,[0,0,0],[2.6,.85,1]);addMesh(dragon,new THREE.SphereGeometry(1,12,10),bellyMat,[0,-.42,.05],[1.7,.35,.78]);let neck=addMesh(dragon,new THREE.CylinderGeometry(.38,.62,2.1,10),dragonMat,[1.8,.5,0]);neck.rotation.z=-.65;const head=new THREE.Group();head.position.set(2.65,1.1,0);dragon.add(head);addMesh(head,new THREE.SphereGeometry(.78,14,12),dragonMat,[0,0,0],[1.25,.72,.85]);addMesh(head,new THREE.ConeGeometry(.32,1.1,8),dragonMat,[.8,-.18,0]).rotation.z=-Math.PI/2;for(let s of [-1,1]){let horn=addMesh(head,new THREE.ConeGeometry(.18,.9,8),hornMat,[-.25,.7,s*.42]);horn.rotation.z=-.45;let eye=addMesh(head,new THREE.SphereGeometry(.13,10,8),eyeMat,[.42,.2,s*.68]);eye.scale.set(1,.7,.5)}let tail=addMesh(dragon,new THREE.ConeGeometry(.45,4,8),dragonMat,[-3.05,.05,0]);tail.rotation.z=Math.PI/2;const wings=[];for(let s of [-1,1]){let pivot=new THREE.Group();pivot.position.set(-.4,.55,s*.55);dragon.add(pivot);let sh=new THREE.Shape();sh.moveTo(0,0);sh.quadraticCurveTo(-1,3,-4.6,4.3);sh.lineTo(-3.1,1.2);sh.lineTo(-4,-.4);sh.lineTo(-1.4,.2);sh.closePath();let wing=addMesh(pivot,new THREE.ShapeGeometry(sh),mat(0x536b7d),[0,0,0]);wing.material.side=THREE.DoubleSide;wings.push(pivot)}const fireGroup=new THREE.Group();dragon.add(fireGroup);for(let i=0;i<8;i++){let f=new THREE.Mesh(new THREE.SphereGeometry(.23+rand()*.18,8,8),new THREE.MeshBasicMaterial({color:i%2?0xffa12d:0xffe46b,transparent:true,opacity:.85}));f.position.set(3.6+i*.42,-.12+rand()*.25,0);f.scale.set(1.5,.7,.7);fireGroup.add(f)}
+const keys={};let touch={x:0,y:0};
+document.querySelectorAll('#dpad button').forEach(btn=>{
+  const key=btn.dataset.key;
+  const press=e=>{e.preventDefault();keys[key]=true;btn.classList.add('pressed');btn.setPointerCapture?.(e.pointerId)};
+  const release=e=>{e.preventDefault();keys[key]=false;btn.classList.remove('pressed')};
+  btn.addEventListener('pointerdown',press);
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>btn.addEventListener(ev,release));
+});
+let sprinting=false,sneaking=false,jumpQueued=false,jumpVelocity=0;
+let lookPointer=null,lastLookX=0,lastLookY=0,cameraYawOffset=0,cameraPitch=0,cameraFollowYaw=0;
+const lookZone=document.querySelector('#lookZone');
+lookZone.addEventListener('pointerdown',e=>{if(lookPointer!==null)return;e.preventDefault();lookPointer=e.pointerId;lastLookX=e.clientX;lastLookY=e.clientY;lookZone.setPointerCapture(e.pointerId)});
+lookZone.addEventListener('pointermove',e=>{if(e.pointerId!==lookPointer)return;e.preventDefault();cameraYawOffset-= (e.clientX-lastLookX)*.008;cameraPitch=THREE.MathUtils.clamp(cameraPitch+(e.clientY-lastLookY)*.006,-1.0,1.0);lastLookX=e.clientX;lastLookY=e.clientY});
+function endLook(e){if(e.pointerId===lookPointer)lookPointer=null}
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>lookZone.addEventListener(ev,endLook));
+const jumpBtn=document.querySelector('#jumpBtn'),sprintBtn=document.querySelector('#sprintBtn'),sneakBtn=document.querySelector('#sneakBtn');
+jumpBtn.addEventListener('pointerdown',e=>{e.preventDefault();jumpQueued=true});
+sprintBtn.addEventListener('click',()=>{sprinting=!sprinting;sprintBtn.classList.toggle('active',sprinting);sprintBtn.textContent=sprinting?'RUN':'SPRINT'});
+sneakBtn.addEventListener('click',()=>{sneaking=!sneaking;sneakBtn.classList.toggle('active',sneaking)});
+addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+const stick=document.querySelector('#stick'),knob=document.querySelector('#knob');let stickPointer=null;
+function resetStick(){touch={x:0,y:0};knob.style.transform='translate(0px,0px)';stickPointer=null}
+stick.addEventListener('pointerdown',e=>{e.preventDefault();stickPointer=e.pointerId;stick.setPointerCapture(e.pointerId);moveStick(e)});
+stick.addEventListener('pointermove',e=>{if(e.pointerId===stickPointer)moveStick(e)});
+function moveStick(e){const r=stick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let x=e.clientX-cx,y=e.clientY-cy;const max=43,d=Math.hypot(x,y);if(d>max){x=x/d*max;y=y/d*max}touch={x:x/max,y:y/max};knob.style.transform=`translate(${x}px,${y}px)`}
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>stick.addEventListener(ev,resetStick));
+let peer=null,conn=null;function setStatus(s){status.textContent=s}function setup(c){conn=c;c.on('open',()=>{setStatus('Friend connected!');retry.hidden=true});c.on('data',d=>{if(!d||typeof d.x!=='number')return;let p=remotes.get(c.peer);if(!p){p=makePlayer(0xe64c76);scene.add(p);remotes.set(c.peer,p)}p.position.set(d.x,0,d.z)});c.on('close',()=>{let p=remotes.get(c.peer);if(p)scene.remove(p);remotes.delete(c.peer);setStatus('Friend disconnected')});c.on('error',()=>{setStatus('Connection error. Try again.');retry.hidden=false})}if(window.Peer){peer=new Peer();peer.on('open',id=>{myid.textContent=id;setStatus('3D world ready. Share your ID!')});peer.on('connection',setup);peer.on('error',e=>{setStatus('Multiplayer: '+e.type+'.');retry.hidden=false})}else setStatus('3D works; multiplayer library unavailable.');function join(){let id=document.querySelector('#friendid').value.trim();if(!id||!peer){setStatus('Enter a friend ID first.');return}setStatus('Connecting…');setup(peer.connect(id))}document.querySelector('#connect').onclick=join;retry.onclick=()=>{if(document.querySelector('#friendid').value.trim())join();else if(peer){peer.reconnect();setStatus('Retrying…')}else setStatus('Refresh and try again')};
+const menuBtn=document.querySelector('#menuBtn'),menuPanel=document.querySelector('#menuPanel');
+menuBtn.addEventListener('click',()=>{const open=menuPanel.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open))});
+document.addEventListener('pointerdown',e=>{if(!document.querySelector('#menuWrap').contains(e.target)){menuPanel.classList.remove('open');menuBtn.setAttribute('aria-expanded','false')}});
+const cameraBtn=document.querySelector('#cameraBtn');
+const player360Btn=document.querySelector('#player360Btn');
+const cameraModes=['Follow','First Person','Top Down','Side','360° Free View'];
+let cameraMode=0;
+function setCameraMode(mode){
+  cameraMode=mode;
+  cameraBtn.textContent='Camera: '+cameraModes[cameraMode];
+  player360Btn.textContent=cameraMode===4?'360° VIEW: ON':'PLAYER 360° VIEW';
+  player360Btn.classList.toggle('active',cameraMode===4);
+}
+cameraBtn.onclick=()=>setCameraMode((cameraMode+1)%cameraModes.length);
+player360Btn.onclick=()=>setCameraMode(cameraMode===4?0:4);
+const doorBtn=document.querySelector('#doorBtn');let nearbyDoor=null;
+doorBtn.addEventListener('click',()=>{if(!nearbyDoor)return;nearbyDoor.open=!nearbyDoor.open;nearbyDoor.pivot.rotation.y=nearbyDoor.open?-Math.PI/2:0;doorBtn.textContent=nearbyDoor.open?'TAP: CLOSE DOOR':'TAP: OPEN DOOR';setStatus(nearbyDoor.open?'Door opened — walk inside!':'Door closed.')});
+const treeBtn=document.querySelector('#treeBtn');let nearbyTree=null,nearbyCrop=null,canPlant=false,nearCraftingTable=false;
+const craftBtn=document.createElement('button');craftBtn.textContent='🛠️ OPEN CRAFTING';craftBtn.style.cssText='position:fixed;right:22px;bottom:150px;z-index:7;min-width:150px;min-height:48px;display:none;background:#d6ad52;color:#222;border:2px solid #fff';document.body.appendChild(craftBtn);craftBtn.addEventListener('click',openCrafting);
+const saplingCount=document.querySelector('#saplingCount');
+let apples=0,mangoes=0;
+const appleCount=document.querySelector('#appleCount'),mangoCount=document.querySelector('#mangoCount');
+let carrots=0,radishes=0,potatoes=0;
+let wood=0,planks=0;
+const woodCount=document.querySelector('#woodCount'),plankCount=document.querySelector('#plankCount');
+function refreshWoodInventory(){woodCount.textContent=wood;plankCount.textContent=planks;if(typeof refreshCrafting==='function')refreshCrafting();}
+let sticks=0,craftingTables=0,woodenPickaxes=0,woodenAxes=0,woodenSwords=0,torches=0;
+const craftPanel=document.querySelector('#craftPanel'),craftInventory=document.querySelector('#craftInventory'),craftRecipes=document.querySelector('#craftRecipes');
+const recipes=[
+ {id:'planks',name:'🟫 4 Planks',cost:'1 Wood',need:{wood:1},make:()=>{wood--;planks+=4}},
+ {id:'sticks',name:'🪵 4 Sticks',cost:'2 Planks',need:{planks:2},make:()=>{planks-=2;sticks+=4}},
+ {id:'table',name:'🛠️ Crafting Table',cost:'4 Planks',need:{planks:4},make:()=>{planks-=4;craftingTables++}},
+ {id:'pickaxe',name:'⛏️ Wooden Pickaxe',cost:'3 Planks + 2 Sticks',need:{planks:3,sticks:2},make:()=>{planks-=3;sticks-=2;woodenPickaxes++}},
+ {id:'axe',name:'🪓 Wooden Axe',cost:'3 Planks + 2 Sticks',need:{planks:3,sticks:2},make:()=>{planks-=3;sticks-=2;woodenAxes++}},
+ {id:'sword',name:'⚔️ Wooden Sword',cost:'2 Planks + 1 Stick',need:{planks:2,sticks:1},make:()=>{planks-=2;sticks--;woodenSwords++}},
+ {id:'torch',name:'🔥 4 Torches',cost:'1 Wood + 1 Stick',need:{wood:1,sticks:1},make:()=>{wood--;sticks--;torches+=4}}
+];
+function hasRecipe(r){return Object.entries(r.need).every(([k,v])=>({wood,planks,sticks}[k]||0)>=v)}
+function refreshCrafting(){
+ if(!craftInventory)return;
+ craftInventory.textContent=`🪵 Wood: ${wood} · 🟫 Planks: ${planks} · Sticks: ${sticks} · ⛏️ Pickaxes: ${woodenPickaxes} · 🪓 Axes: ${woodenAxes} · ⚔️ Swords: ${woodenSwords} · 🔥 Torches: ${torches} · Tables: ${craftingTables}`;
+ craftRecipes.innerHTML='';
+ for(const r of recipes){const b=document.createElement('button');b.type='button';b.textContent=`${r.name}\n${r.cost}\nCRAFT`;b.disabled=!hasRecipe(r);b.addEventListener('click',()=>{if(!hasRecipe(r))return;r.make();refreshWoodInventory();refreshCrafting();setStatus(`Crafted ${r.name.replace(/^\S+\s/, '')}!`)});craftRecipes.appendChild(b)}
+}
+function openCrafting(){refreshCrafting();craftPanel.classList.add('open')}
+document.querySelector('#closeCraft').addEventListener('click',()=>craftPanel.classList.remove('open'));
+
+const carrotCount=document.querySelector('#carrotCount'),radishCount=document.querySelector('#radishCount'),potatoCount=document.querySelector('#potatoCount');
+function refreshCropInventory(){carrotCount.textContent=carrots;radishCount.textContent=radishes;potatoCount.textContent=potatoes;}
+function refreshSaplings(){saplingHUD.textContent='🌱 Saplings: '+saplings;saplingCount.textContent=saplings}
+function refreshFruitInventory(){if(appleCount)appleCount.textContent=apples;if(mangoCount)mangoCount.textContent=mangoes}
+let selectedInventorySlot=1;
+document.querySelectorAll('.inventory-slot').forEach(slot=>slot.addEventListener('click',()=>{
+ selectedInventorySlot=Number(slot.dataset.slot);
+ document.querySelectorAll('.inventory-slot').forEach(el=>el.classList.toggle('selected',Number(el.dataset.slot)===selectedInventorySlot));
+}));
+const healthHUD=document.querySelector('#healthHUD');let health=10,healthElapsed=0;
+function updateHealth(dt){
+ if(hunger===0){healthElapsed+=dt;if(healthElapsed>=30){health=Math.max(0,health-1);healthElapsed=0;}}
+ else if(hunger>=6&&health<10){healthElapsed+=dt;if(healthElapsed>=45){health=Math.min(10,health+1);healthElapsed=0;}}
+ healthHUD.querySelectorAll('.heart').forEach((icon,i)=>icon.classList.toggle('full',i<health));
+ healthHUD.setAttribute('aria-label',`Health: ${health} out of 10`);
+}
+function removeTree(rec){worldGroup.remove(rec.group);const i=solidCircles.indexOf(rec.collision);if(i>=0)solidCircles.splice(i,1);const j=treeRecords.indexOf(rec);if(j>=0)treeRecords.splice(j,1)}
+treeBtn.addEventListener('click',()=>{
+ if(nearbyCrop){
+   const crop=nearbyCrop;worldGroup.remove(crop.group);const ci=cropRecords.indexOf(crop);if(ci>=0)cropRecords.splice(ci,1);
+   if(crop.type==='carrot')carrots++;else if(crop.type==='radish')radishes++;else potatoes++;refreshCropInventory();
+   setStatus(`Collected ${crop.type}! Added to your inventory.`);nearbyCrop=null;return;
+ }
+ if(nearbyTree&&nearbyTree.stage==='mature'){
+   const rec=nearbyTree;player.userData.axe.rotation.z=-1.35;setTimeout(()=>{if(player.userData.axe)player.userData.axe.rotation.z=-.35},260);
+   // A mature tree takes exactly five successful chop-button hits to break.
+   rec.hits=(rec.hits||0)+1;
+   if(rec.hits >= 5){
+     const fruitType=rec.group.userData.fruitType||'';
+     const appleLoot=fruitType.includes('apple')?1+Math.floor(Math.random()*3):0;
+     const mangoLoot=fruitType.includes('mango')?1+Math.floor(Math.random()*3):0;
+     const woodLoot=1+Math.floor(Math.random()*3);
+     apples+=appleLoot;mangoes+=mangoLoot;wood+=woodLoot;refreshFruitInventory();refreshWoodInventory();
+     removeTree(rec);saplings++;refreshSaplings();
+     const lootText=[`🪵 ${woodLoot} wood`,appleLoot?`🍎 ${appleLoot}`:'',mangoLoot?`🥭 ${mangoLoot}`:''].filter(Boolean).join(' + ');
+     setStatus(`Tree broken! You got 1 sapling, ${lootText}. Tap the wood slot to craft 4 planks per wood.`);
+   }
+   else setStatus(`🪓 Tree damage: ${rec.hits}/5 hits — ${5-rec.hits} more hit(s) to break it.`);
+ }else if(canPlant&&saplings>0){
+   const x=player.position.x+Math.sin(player.rotation.y)*2.35,z=player.position.z+Math.cos(player.rotation.y)*2.35;
+   makeSapling(x,z,performance.now());saplings--;refreshSaplings();setStatus('Sapling planted! It will become a tree after one full in-game day (24 minutes).');
+ }
+});
+function updateTrees(now){
+ for(const rec of [...treeRecords])if(rec.stage==='sapling'&&now-rec.plantedAt>=24*60*1000){
+   const {x,z}=rec;removeTree(rec);makeMatureTree(x,z,rec.plantedAt);setStatus('Your planted tree has fully grown!');
+ }
+}
+
+const clockLabel=document.querySelector('#clock');
+const hungerHUD=document.querySelector('#hungerHUD');
+let hunger=10,hungerElapsed=0;
+function updateHunger(dt,moving){
+  // Lose one hunger point for each 60 seconds of active movement.
+  if(moving&&hunger>0){hungerElapsed+=dt;if(hungerElapsed>=60){hunger=Math.max(0,hunger-1);hungerElapsed=0;}}
+  hungerHUD.querySelectorAll('.food').forEach((icon,i)=>icon.classList.toggle('full',i<hunger));
+  hungerHUD.setAttribute('aria-label',`Hunger: ${hunger} out of 10`);
+}
+// Tap an apple or mango inventory slot to eat one fruit.
+function eatFruit(type){
+  const isApple=type==='apple';
+  const count=isApple?apples:mangoes;
+  const foodValue=isApple?3:5;
+  const label=isApple?'Apple':'Mango';
+  if(count<=0){setStatus(`No ${label.toLowerCase()}s left in your inventory.`);return;}
+  if(hunger>=10){setStatus('Hunger is already full!');return;}
+  if(isApple)apples--;else mangoes--;
+  hunger=Math.min(10,hunger+foodValue);
+  refreshFruitInventory();
+  hungerHUD.querySelectorAll('.food').forEach((icon,i)=>icon.classList.toggle('full',i<hunger));
+  hungerHUD.setAttribute('aria-label',`Hunger: ${hunger} out of 10`);
+  setStatus(`You ate 1 ${label.toLowerCase()}! +${foodValue} hunger.`);
+}
+document.querySelector('[data-slot="3"]').addEventListener('click',()=>eatFruit('apple'));
+document.querySelector('[data-slot="4"]').addEventListener('click',()=>eatFruit('mango'));
+document.querySelector('[data-slot="8"]').addEventListener('click',()=>{
+ if(wood<=0){setStatus('No wood available to craft planks.');return;}
+ const crafted=wood*4;planks+=crafted;wood=0;refreshWoodInventory();
+ setStatus(`Crafted ${crafted} planks from your wood!`);refreshCrafting();
+});
+const daySky=new THREE.Color(0x9bcfef),nightSky=new THREE.Color(0x101a32),duskSky=new THREE.Color(0xe99a68);
+const outsideObjects=[...worldGroup.children];
+function updateInterior(){
+ let found=null;
+ for(const d of houseDoors){const inside=Math.abs(player.position.x-d.x)<5.15&&player.position.z>d.z-4.6&&player.position.z<d.z+4.6;if(inside){found=d;break}}
+ if(found!==activeInterior){
+   activeInterior=found;
+   for(const obj of outsideObjects)obj.visible=!found||obj===found.house;
+   ground.visible=!found;road.visible=!found;
+   for(const d of houseDoors){d.roof.visible=!found||d!==found;d.roofTrim.visible=!found||d!==found;}
+   if(found){found.roof.visible=false;found.roofTrim.visible=false;scene.background.set(0x554637);scene.fog=null;}
+   else{scene.background.copy(daySky);scene.fog=new THREE.Fog(0x9bcfef,75,230);}
+ }
+}
+function updateDayNight(elapsed){
+ const minutes=(elapsed/1000/60)%24, hours=Math.floor(minutes),mins=Math.floor((minutes-hours)*60);
+ clockLabel.textContent=`${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}`;
+ const angle=minutes/24*Math.PI*2-Math.PI/2;
+ const daylight=THREE.MathUtils.clamp((Math.sin(angle)+.12)/.62,0,1);
+ const dusk=Math.max(0,1-Math.abs(minutes-6)/2.2,1-Math.abs(minutes-18)/2.2);
+ const sky=new THREE.Color().copy(nightSky).lerp(duskSky,THREE.MathUtils.clamp(dusk,0,1)*.72).lerp(daySky,daylight);
+ if(!activeInterior){scene.background.copy(sky);if(scene.fog)scene.fog.color.copy(sky)}
+ // Compass-locked orbit: East = -X, West = +X. The player position is
+ // used only as the sky's local centre; camera yaw/pitch is never used here.
+ // This keeps sunrise in the East and sunset in the West while the player walks
+ // or turns freely, just like Minecraft's fixed world directions.
+ const sunX=-Math.cos(angle)*105;
+ const sunY=Math.sin(angle)*82;
+ const moonX=Math.cos(angle)*105;
+ const moonY=-Math.sin(angle)*82;
+ const skyX=player.position.x, skyZ=player.position.z;
+ sunVisual.position.set(skyX+sunX,player.position.y+sunY,skyZ);
+ sunGlow.position.copy(sunVisual.position);
+ moonVisual.position.set(skyX+moonX,player.position.y+moonY,skyZ);
+ // Follow the player by translation only, never by camera rotation.
+ starField.position.set(skyX,player.position.y,skyZ);
+ sun.position.set(skyX+sunX,Math.max(5,player.position.y+sunY),skyZ);
+ sun.target.position.set(skyX,0,skyZ);
+ // Sun rises in the East at 06:00 and sets in the West at 18:00.
+ // The moon follows the same fixed East-to-West path during the night.
+ const sunAbove=Math.sin(angle)>0.015;
+ const moonAbove=Math.sin(angle)<-0.015;
+ sunVisual.visible=sunAbove;
+ sunGlow.visible=sunAbove;
+ moonVisual.visible=moonAbove;
+ starField.visible=moonAbove;
+ starField.material.opacity=THREE.MathUtils.clamp((.32-daylight)/.22,0,1);
+ sun.intensity=.12+daylight*2.25;hemi.intensity=.4+daylight*1.55;
+}
+let lastSend=0;function animate(t){requestAnimationFrame(animate);let dt=Math.min(.05,(t-(animate.last||t))/1000);animate.last=t;let inputX=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+touch.x;
+ let inputZ=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0)+touch.y;
+ const inputLen=Math.hypot(inputX,inputZ)||1;
+ // Camera-relative controls: forward always moves toward the direction the camera faces.
+ // Use the camera's horizontal heading only. Camera pitch (looking up/down)
+ // must not change the ground direction in which the player walks.
+ const moveYaw=cameraFollowYaw+cameraYawOffset;
+ // UP = forward along camera heading; DOWN = backward; LEFT/RIGHT = strafe.
+ let dx=(inputX*Math.cos(moveYaw)-inputZ*Math.sin(moveYaw))/inputLen;
+ let dz=(-inputX*Math.sin(moveYaw)-inputZ*Math.cos(moveYaw))/inputLen;
+ const moveSpeed=sneaking?4.2:(sprinting?16:10);
+ const oldPlayerX=player.position.x,oldPlayerZ=player.position.z;
+ let nx=THREE.MathUtils.clamp(player.position.x+dx*moveSpeed*dt,-1120,1120),nz=THREE.MathUtils.clamp(player.position.z+dz*moveSpeed*dt,-820,820);
+ if(jumpQueued&&player.position.y<=.001){jumpVelocity=8.2;jumpQueued=false}
+ jumpVelocity-=22*dt;player.position.y=Math.max(0,player.position.y+jumpVelocity*dt);if(player.position.y===0)jumpVelocity=0;
+ const radius=.48;
+ function collides(px,pz){
+   for(const r of solidRects){
+     const qx=Math.max(r.cx-r.hx,Math.min(px,r.cx+r.hx));
+     const qz=Math.max(r.cz-r.hz,Math.min(pz,r.cz+r.hz));
+     if((px-qx)**2+(pz-qz)**2<radius*radius)return true;
+   }
+   for(const c of solidCircles){const rr=radius+c.r;if((px-c.cx)**2+(pz-c.cz)**2<rr*rr)return true}
+   for(const d of houseDoors){if(!d.open){const qx=Math.max(d.x+.825,Math.min(px,d.x+1.875)),qz=Math.max(d.z+4.875,Math.min(pz,d.z+5.37));if((px-qx)**2+(pz-qz)**2<radius*radius)return true}}
+   for(const other of remotes.values()){if((px-other.position.x)**2+(pz-other.position.z)**2<1)return true}
+   return false;
+ }
+ // Move each axis independently so the player slides along obstacles.
+ if(!collides(nx,player.position.z))player.position.x=nx;
+ if(!collides(player.position.x,nz))player.position.z=nz;
+ const actualMoveX=player.position.x-oldPlayerX,actualMoveZ=player.position.z-oldPlayerZ;
+ const moving=Math.hypot(actualMoveX,actualMoveZ)>.001;
+ if(moving)player.rotation.y=Math.atan2(actualMoveX,actualMoveZ);
+ player.userData.legMeshes.forEach((leg,i)=>{leg.rotation.x=moving?Math.sin(t*.014+(i?Math.PI:0))*.62:THREE.MathUtils.damp(leg.rotation.x,0,10,dt)});updateHunger(dt,moving);updateHealth(dt);updateInterior();updateDayNight(t);
+ let best=null,bestDist=6;for(const d of houseDoors){const dist=Math.hypot(player.position.x-d.x,player.position.z-(d.z+6.15));if(dist<bestDist){best=d;bestDist=dist}}
+ nearbyDoor=best;doorBtn.style.display=best&&bestDist<4.8?'block':'none';if(best)doorBtn.textContent=best.open?'TAP: CLOSE DOOR':'TAP: OPEN DOOR';
+ updateTrees(t);
+ nearbyTree=null;let treeDist=5.2;for(const tr of treeRecords){if(tr.stage!=='mature')continue;const d=Math.hypot(player.position.x-tr.x,player.position.z-tr.z);if(d<treeDist){treeDist=d;nearbyTree=tr}}
+ nearbyCrop=null;let cropDist=3.4;for(const crop of cropRecords){const d=Math.hypot(player.position.x-crop.x,player.position.z-crop.z);if(d<cropDist){cropDist=d;nearbyCrop=crop}}
+ const plantX=player.position.x+Math.sin(player.rotation.y)*2.35,plantZ=player.position.z+Math.cos(player.rotation.y)*2.35;
+ canPlant=saplings>0&&treeDist>=5.2&&treeRecords.every(tr=>Math.hypot(plantX-tr.x,plantZ-tr.z)>3.2)&&houseDoors.every(h=>Math.hypot(plantX-h.x,plantZ-h.z)>8);
+ nearCraftingTable=Math.hypot(player.position.x-4,player.position.z-4)<4.2;craftBtn.style.display=nearCraftingTable?'block':'none';
+ treeBtn.style.display=(nearbyCrop||nearbyTree||canPlant)?'block':'none';treeBtn.textContent=nearbyCrop?`🥕 PICK ${nearbyCrop.type.toUpperCase()}`:nearbyTree?`🪓 HIT TREE (${nearbyTree.hits||0}/5)`:'🌱 PLANT SAPLING';
+
+ if(conn&&conn.open&&t-lastSend>80){conn.send({x:player.position.x,z:player.position.z});lastSend=t}let sec=t/1000;dragon.position.set(Math.sin(sec*.22)*58,12+Math.sin(sec*.8)*2.5,Math.cos(sec*.22)*35);dragon.rotation.y=Math.PI/2-sec*.22;dragon.rotation.z=Math.sin(sec*.8)*.06;wings.forEach((w,i)=>w.rotation.z=(i===0?-1:1)*Math.sin(sec*7)*.65);fireGroup.visible=Math.sin(sec*3)>-.75;fireGroup.children.forEach((f,i)=>{f.position.x=3.6+i*.42+Math.sin(sec*10+i)*.12;f.scale.x=1.1+Math.sin(sec*12+i)*.4});// PUBG/Minecraft-style camera: smoothly turns behind the direction of travel.
+ if(moving){
+   const angleDelta=Math.atan2(Math.sin(player.rotation.y-cameraFollowYaw),Math.cos(player.rotation.y-cameraFollowYaw));
+   cameraFollowYaw+=angleDelta*Math.min(1,dt*5.5);
+   // Once the player starts moving toward the manually aimed camera heading,
+   // smoothly settle the manual offset so it cannot accumulate into endless spin.
+   if(cameraMode!==4)cameraYawOffset*=Math.max(0,1-dt*2.2);
+ }
+ const viewYaw=cameraFollowYaw+cameraYawOffset;
+ const fx=Math.sin(viewYaw),fz=Math.cos(viewYaw);
+ if(cameraMode===0){
+   const followDistance=activeInterior?3.7:12;
+   const desired=new THREE.Vector3(player.position.x-fx*followDistance,player.position.y+(activeInterior?3.2:7),player.position.z-fz*followDistance);
+   camera.position.lerp(desired,activeInterior?.22:.14);
+   camera.lookAt(player.position.x,activeInterior?1.8:2,player.position.z);
+ }else if(cameraMode===1){
+   camera.position.set(player.position.x,player.position.y+(activeInterior?2.2:2.65),player.position.z);
+   camera.lookAt(player.position.x+fx*12,player.position.y+2.5,player.position.z+fz*12);
+ }else if(cameraMode===2){
+   const desired=new THREE.Vector3(player.position.x-fx*.01,player.position.y+25,player.position.z-fz*.01);
+   camera.position.lerp(desired,.16);
+   camera.lookAt(player.position.x,0,player.position.z);
+ }else if(cameraMode===3){
+   const desired=new THREE.Vector3(player.position.x-fx*14,player.position.y+6,player.position.z-fz*14);
+   camera.position.lerp(desired,.14);
+   camera.lookAt(player.position.x,1.8,player.position.z);
+ }else{
+   // 360-degree free orbit camera. Drag the right side of the screen to look all around.
+   const orbitDistance=activeInterior?7:18;
+   const horizontal=Math.cos(cameraPitch)*orbitDistance;
+   const desired=new THREE.Vector3(
+     player.position.x-Math.sin(viewYaw)*horizontal,
+     player.position.y+2.2+Math.sin(cameraPitch)*orbitDistance,
+     player.position.z-Math.cos(viewYaw)*horizontal
+   );
+   camera.position.lerp(desired,.2);
+   camera.lookAt(player.position.x,player.position.y+1.6,player.position.z);
+ }
+ renderer.render(scene,camera)}requestAnimationFrame(animate);addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script><script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script></body></html>
